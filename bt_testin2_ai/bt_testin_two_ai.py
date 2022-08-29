@@ -9,7 +9,7 @@ from drive_func2 import get_new_text
 from drive_func2 import add_horn_turnsig
 from video_func2 import record
 from tensorflow import keras
-from tensorflow.keras.models import load_model#import 要這樣打才可以跑
+from tensorflow.keras.models import load_model#import 要這樣打才可以跑   hello
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 def change_str_float_array(feedback):
     a = feedback.split(',')
