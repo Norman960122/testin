@@ -64,7 +64,7 @@ i = 128
 # for j in range(32, 129, 32):
 # for i in range(16, 129, 16):
 for k in range(1):
-    # 建立簡單的線性執行的模型
+    # 建立線性執行的模型
     model = Sequential()
     
     model.add(Flatten(input_shape = input_shape))
