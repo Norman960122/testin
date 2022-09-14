@@ -20,7 +20,7 @@ x_test = x_test.reshape(-1, 20)
 y_test = y_test - 1
 y_train = y_train - 1
 print(x_train.shape, y_train.shape)
-model = XGBClassifier() 
+model = XGBClassifier(max_depth = 5) 
 
 model.fit(x_train, y_train)
 y_pred_train = model.predict(x_train) 

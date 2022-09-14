@@ -18,13 +18,13 @@ batch_size = 64
 # 定義分類數量
 num_classes = 9
 # 定義訓練週期
-epochs = 400
+epochs = 200
 
 # 定義圖像寬、高
 img_rows, img_cols = 5, 4
 
 # 載入 MNIST 訓練資料
-x_train = np.loadtxt('x_train_short2.txt')
+x_train = np.loadtxt('x_train_short2m.txt')
 y_train = np.loadtxt('y_train_short2.txt')
 x_test = np.loadtxt('x_test_short3.txt')
 y_test = np.loadtxt('y_test_short3.txt')
