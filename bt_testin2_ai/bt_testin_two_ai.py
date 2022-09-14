@@ -20,7 +20,7 @@ def change_str_float_array(feedback):
     return b
 #///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 model_long = load_model('model97.h5')#--------------------------載入模型
-model_short = load_model('model_short933.h5')#--------------------------載入模型
+model_short = load_model('model_short93m.h5')#--------------------------載入模型
 file_name = input("enter file name to write into:")
 COM_number = input("enter com port number:")
 cam_number = input("enter cam number:")
