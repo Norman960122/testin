@@ -4,10 +4,9 @@ img_rows, img_cols = 5, 4
 x = np.loadtxt('x_train_short_all.txt')   #------------------讀取檔案
 y = np.loadtxt('y_train_short_all.txt')  
 reshaped_x = x.reshape(-1, img_rows, img_cols)
-first_dim = np.random.permutation(reshaped_x.shape[0])		#打亂後的行號（將0～1719的數字打亂）
-print(first_dim)
+first_dim = np.random.permutation(reshaped_x.shape[0])		#打亂後的行號（將第一維度數字打亂）
 # print(type(reshaped_x.shape[0]*0.9))
-train_index, valid_index, test_index = first_dim[ : int((reshaped_x.shape[0]*0.8))],    first_dim[int((reshaped_x.shape[0]*0.8)) : int((reshaped_x.shape[0]*0.9))],    first_dim[int(reshaped_x.shape[0]*0.9) : reshaped_x.shape[0]]
+train_index, valid_index, test_index = first_dim[ : int((reshaped_x.shape[0]*0.8))],    first_dim[int((reshaped_x.shape[0]*0.8)) : int((reshaped_x.shape[0]*0.9))],    first_dim[int(reshaped_x.shape[0]*0.9) : reshaped_x.shape[0]]#將打亂的index分成8:1:1的數量
 new_train_X = reshaped_x[train_index, :, :]		#獲取打亂後的訓練資料(照著打亂的array順序創造一個新的檔案)
 new_train_y = y[train_index]
 

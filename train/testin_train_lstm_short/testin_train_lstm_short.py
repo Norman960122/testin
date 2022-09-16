@@ -5,6 +5,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Flatten
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, LSTM
 from tensorflow.keras import backend as K
+from time import time
 import numpy as np
 def divide(data):  #資料第一行除以250
     vector, remain = np.split(data,[1],axis = 1)
@@ -20,17 +21,29 @@ num_classes = 9
 # 定義訓練週期
 epochs = 200
 
-# 定義圖像寬、高
-img_rows, img_cols = 5, 4
+
 
 # 載入 MNIST 訓練資料
-x_train = np.loadtxt('x_train_short2m.txt')
-y_train = np.loadtxt('y_train_short2.txt')
-x_test = np.loadtxt('x_test_short3.txt')
-y_test = np.loadtxt('y_test_short3.txt')
+#--------------------------------------------------------
+img_rows, img_cols = 5, 4
+x = np.loadtxt('x_train_short_all.txt')   #------------------讀取檔案
+y = np.loadtxt('y_train_short_all.txt')  
+reshaped_x = x.reshape(-1, img_rows, img_cols)
+first_dim = np.random.permutation(reshaped_x.shape[0])		#打亂後的行號（將0～1719的數字打亂）
+# print(type(reshaped_x.shape[0]*0.9))
+train_index, valid_index, test_index = first_dim[ : int((reshaped_x.shape[0]*0.8))],    first_dim[int((reshaped_x.shape[0]*0.8)) : int((reshaped_x.shape[0]*0.9))],    first_dim[int(reshaped_x.shape[0]*0.9) : reshaped_x.shape[0]]
+x_train = reshaped_x[train_index, :, :]		#獲取打亂後的訓練資料(照著打亂的array順序創造一個新的檔案)
+y_train = y[train_index]
 
+x_test = reshaped_x[test_index, :, :]		#獲取打亂後的測試資料(照著打亂的array順序創造一個新的檔案)
+y_test = y[test_index]
+
+x_valid = reshaped_x[valid_index, :, :]		#獲取打亂後的validation資料(照著打亂的array順序創造一個新的檔案)
+y_valid = y[valid_index]
+#--------------------------------------------
 y_train = y_train - 1     #on hot encoding 要求 類別要從零開始
 y_test = y_test - 1
+y_valid = y_valid - 1
 # 保留原始資料，供 cross tab function 使用
 y_test_org = y_test
 
@@ -43,64 +56,51 @@ y_test_org = y_test
 
 # channels_first: 色彩通道(R/G/B)資料(深度)放在第2維度，第3、4維度放置寬與高
 
-x_train = x_train.reshape(-1, img_rows, img_cols)
-x_test = x_test.reshape(-1, img_rows, img_cols)
 input_shape = (img_rows, img_cols)
 
 
 # y 值轉成 one-hot encoding
 y_train = keras.utils.to_categorical(y_train, num_classes)#？////////////////？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
 y_test = keras.utils.to_categorical(y_test, num_classes)
+y_valid = keras.utils.to_categorical(y_valid, num_classes)
 
-
-
-# print(x_train.shape, x_train[0])
-# print(x_test.shape)
-# print(y_train.shape, y_train[0])
-# print(y_test.shape)
-
-i = 128
+i = 64
 # j = 64
 # for j in range(32, 129, 32):
 # for i in range(16, 129, 16):
 for k in range(1):
-    # 建立簡單的線性執行的模型
+   
     model = Sequential()
-    # 建立卷積層，filter=32,即 output space 的深度, Kernal Size: 3x3, activation function 採用 relu
+   
     model.add(LSTM(i, input_shape = input_shape))
 
-    # model.add(MaxPooling2D(pool_size=(2, 2)))
-    # 建立卷積層，filter=64,即 output size, Kernal Size: 3x3, activation function 採用 relu
-    # model.add(Conv2D(j, (3, 3), activation='relu'))
-    # 建立池化層，池化大小=2x2，取最大值
-    # model.add(MaxPooling2D(pool_size=(2, 2)))
-    # Dropout層隨機斷開輸入神經元，用於防止過度擬合，斷開比例:0.25
     model.add(Dropout(0.25))
-    # Flatten層把多維的輸入一維化，常用在從卷積層到全連接層的過渡。
-    # model.add(Flatten())
-    # 全連接層: 128個output
-    model.add(Dense(128, activation='relu'))
-    # Dropout層隨機斷開輸入神經元，用於防止過度擬合，斷開比例:0.5
+  
+    model.add(Dense(32, activation='relu'))
+  
     model.add(Dropout(0.5))
-    # 使用 softmax activation function，將結果分類
+
     model.add(Dense(num_classes, activation='softmax'))
 
-    # 編譯: 選擇損失函數、優化方法及成效衡量方式
     model.compile(loss=keras.losses.categorical_crossentropy,
-                optimizer=keras.optimizers.Adam(),##################Adadelta？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
+                optimizer=keras.optimizers.Adam(),
                 metrics=['accuracy'])
 
-    # 進行訓練, 訓練過程會存在 train_history 變數中
     train_history = model.fit(x_train, y_train,
             batch_size=batch_size,
             epochs=epochs,
-            verbose=1,                #？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
-            validation_data=(x_test, y_test))
+            verbose=1,                
+            validation_data=(x_valid, y_valid))
 
     # 顯示損失函數、訓練成果(分數)
     score = model.evaluate(x_test, y_test, verbose=0)
     print('Test loss:', score[0])
     print('Test accuracy:', score[1])
+
+    start = time()
+    aaa = model.predict_classes(x_train[1, :, :].reshape(1, 5, 4))
+    end = time()
+    print(end - start)
 
     if s < score[1]:#儲存正確率最高的模型
         save_i = i

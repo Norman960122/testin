@@ -1,3 +1,17 @@
 kernel 1:128 kernel 2:64 score:0.9222221970558167
 kernel 1:128 kernel 2:64 score:0.9277777671813965
 kernel 1:128 kernel 2:64 score:0.9194444417953491
+kernel 1:128 kernel 2:64 score:0.8842592835426331
+kernel 1:32 kernel 2:32 score:0.8981481194496155
+kernel 1:32 kernel 2:32 score:0.8611111044883728
+kernel 1:64 kernel 2:32 score:0.9259259104728699
+kernel 1:64 kernel 2:64 score:0.9120370149612427
+kernel 1:64 kernel 2:64 score:0.9351851940155029
+kernel 1:64 kernel 2:64 score:0.9259259104728699
+kernel 1:64 kernel 2:64 score:0.8888888955116272
+kernel 1:64 kernel 2:64 score:0.875
+kernel 1:64 kernel 2:64 score:0.875
+kernel 1:64 kernel 2:64 score:0.8888888955116272
+kernel 1:64 kernel 2:32 score:0.8888888955116272
+kernel 1:64 kernel 2:32 score:0.9074074029922485
+kernel 1:64 kernel 2:32 score:0.9027777910232544

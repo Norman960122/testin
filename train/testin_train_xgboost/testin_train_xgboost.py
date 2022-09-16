@@ -1,36 +1,55 @@
 import numpy as np
-import xgboost as xgb
-
-from sklearn import datasets
 
 from sklearn.model_selection import train_test_split
-
-from sklearn.preprocessing import LabelEncoder 
 
 from xgboost import XGBClassifier
 
 from sklearn.metrics import accuracy_score
+from time import time
 
-x_train = np.loadtxt('x_train_short2.txt')
-y_train = np.loadtxt('y_train_short2.txt')
-x_test = np.loadtxt('x_test_short3.txt')
-y_test = np.loadtxt('y_test_short3.txt')
-x_train = x_train.reshape(-1, 20)
-x_test = x_test.reshape(-1, 20)
+#--------------------------------------------------------
+img_rows, img_cols = 5, 4
+x = np.loadtxt('x_train_short_all.txt')   #------------------讀取檔案
+y = np.loadtxt('y_train_short_all.txt')  
+reshaped_x = x.reshape(-1, img_rows, img_cols)
+first_dim = np.random.permutation(reshaped_x.shape[0])		#打亂後的行號（將0～1719的數字打亂）
+# print(type(reshaped_x.shape[0]*0.9))
+train_index, valid_index, test_index = first_dim[ : int((reshaped_x.shape[0]*0.8))],    first_dim[int((reshaped_x.shape[0]*0.8)) : int((reshaped_x.shape[0]*0.9))],    first_dim[int(reshaped_x.shape[0]*0.9) : reshaped_x.shape[0]]
+x_train = reshaped_x[train_index, :, :]		#獲取打亂後的訓練資料(照著打亂的array順序創造一個新的檔案)
+y_train = y[train_index]
+
+x_test = reshaped_x[test_index, :, :]		#獲取打亂後的測試資料(照著打亂的array順序創造一個新的檔案)
+y_test = y[test_index]
+
+x_valid = reshaped_x[valid_index, :, :]		#獲取打亂後的validation資料(照著打亂的array順序創造一個新的檔案)
+y_valid = y[valid_index]
+#--------------------------------------------
 y_test = y_test - 1
 y_train = y_train - 1
-print(x_train.shape, y_train.shape)
-model = XGBClassifier(max_depth = 5) 
+y_valid = y_valid - 1
+
+x_train = x_train.reshape(-1, 20)
+x_test = x_test.reshape(-1, 20)   
+x_valid = x_valid.reshape(-1, 20)
+
+model = XGBClassifier(max_depth = 6, n_estimators = 15) 
 
 model.fit(x_train, y_train)
 y_pred_train = model.predict(x_train) 
+y_pred_valid = model.predict(x_valid)
 y_pred_test = model.predict(x_test) 
 
 
 train_accuracy = accuracy_score(y_train, y_pred_train) 
+valid_accuracy = accuracy_score(y_valid, y_pred_valid)
 test_accuracy = accuracy_score(y_test, y_pred_test) 
 print("train Accuracy: %f%%" % (train_accuracy * 100.0))
+print("validation Accuracy: %f%%" % (valid_accuracy * 100.0))
 print("test Accuracy: %f%%" % (test_accuracy * 100.0))
+start = time()
+predict = model.predict(x_test[0, :].reshape(1, 20))
+end = time()
+print(end - start)
 # import xgboost as xgb
 
 # from sklearn import datasets
